@@ -69,7 +69,7 @@ public class EncryptAutoConfiguration {
      * @return
      */
     @Bean
-    @ConfigurationProperties(prefix = "leaf.secure")
+    @ConfigurationProperties(prefix = "zzb.secure")
     public SecureConfig secureConfig() {
         return new SecureConfig();
     }
