@@ -18,6 +18,14 @@ public class SecretKeyConstant {
 
     public final static String AlgorithmName = "Algorithm";
 
+    public static final String CONTENT_TYPE = "Content-Type";
+
+    public static final String APP_JSON = "application/json";
+
+    public static final String UTF_8 = "UTF-8";
+
+    public static final String REFERER_HEADER = "referer";
+
     public enum Algorithm {
         SM2Algorithm(SM2, SM2 + AlgorithmName ,"SM2"),
         RASAlgorithm(RAS, RAS + AlgorithmName ,"RAS"),

@@ -1,10 +1,10 @@
 package org.zzb.secret.interceptor;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.zzb.secret.context.SecretTreadLocal;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 public class SecretInterceptor implements HandlerInterceptor {
 

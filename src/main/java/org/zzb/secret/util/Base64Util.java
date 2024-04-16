@@ -1,6 +1,8 @@
 package org.zzb.secret.util;
 
-import org.apache.commons.codec.binary.Base64;
+
+import org.bouncycastle.util.encoders.Base64;
+
 /**
  * @author zzb
  * @version 1.0
@@ -17,7 +19,7 @@ public class Base64Util {
      * @throws Exception Exception
      */
     public static byte[] decode(String base64) throws Exception {
-        return Base64.decodeBase64(base64);
+        return Base64.decode(base64);
     }
 
     /**
@@ -27,6 +29,6 @@ public class Base64Util {
      * @throws Exception Exception
      */
     public static String encode(byte[] bytes) throws Exception {
-        return new String(Base64.encodeBase64(bytes));
+        return new String(Base64.encode(bytes));
     }
 }

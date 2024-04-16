@@ -1,8 +1,9 @@
 package org.zzb.secret.config;
 
 
-import org.apache.commons.codec.Charsets;
 import org.zzb.secret.constant.SecretKeyConstant;
+
+import static org.zzb.secret.constant.SecretKeyConstant.UTF_8;
 
 
 /**
@@ -81,7 +82,7 @@ public class SecureConfig {
     /**
      * 编码
      */
-    private String charset = Charsets.UTF_8.name();
+    private String charset = UTF_8;
 
     /**
      * 是否开启

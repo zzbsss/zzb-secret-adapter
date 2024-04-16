@@ -1,5 +1,7 @@
 package org.zzb.secret.config;
 
+import java.util.List;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -7,9 +9,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.zzb.secret.handler.common.decrypt.DecryptRequestParamResolver;
 import org.zzb.secret.interceptor.SecretInterceptor;
 
-import java.util.List;
-
 @Configuration
+@ConditionalOnExpression("#{${zzb.secure.enable}  && T(org.zzb.secret.constant.SecretKeyConstant.Type).valueOf('${zzb.secure.type}') == T(org.zzb.secret.constant.SecretKeyConstant.Type).comm}")
 public class WebConfig implements WebMvcConfigurer  {
 
     private final SecureConfig secureConfig;

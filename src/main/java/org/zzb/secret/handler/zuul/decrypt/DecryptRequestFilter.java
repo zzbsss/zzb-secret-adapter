@@ -1,36 +1,33 @@
 package org.zzb.secret.handler.zuul.decrypt;
 
-import cn.hutool.http.Method;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.http.ServletInputStreamWrapper;
-import java.nio.charset.StandardCharsets;
-import java.util.Enumeration;
-import java.util.Objects;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StreamUtils;
-
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StreamUtils;
 import org.springframework.util.StringUtils;
 import org.zzb.secret.algorithm.AlgorithmType;
-import org.zzb.secret.annotation.DecryptParam;
-import org.zzb.secret.annotation.EncryptDecrypt;
 import org.zzb.secret.config.SecureConfig;
-import org.zzb.secret.constant.SecretKeyConstant;
 import org.zzb.secret.factory.AlgorithmFactory;
+import org.zzb.secret.util.RequetSupport;
 
-import static cn.hutool.http.Method.GET;
-import static cn.hutool.http.Method.POST;
-import static cn.hutool.http.Method.PUT;
+import static org.springframework.http.HttpMethod.DELETE;
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.PUT;
+
 
 /**
  *
@@ -75,22 +72,7 @@ public class DecryptRequestFilter extends ZuulFilter {
      */
     @Override
     public boolean shouldFilter() {
-        if (Objects.isNull(secureConfig) || !secureConfig.isEnable()) {
-            return false;
-        }
-        // 不是通用实现 返回false
-        if (secureConfig.getType() != SecretKeyConstant.Type.zuul) {
-            return false;
-        }
-        // 配置了全局打开
-        if (secureConfig.getModel() == SecretKeyConstant.Model.all) {
-            return true;
-        }
-        // 配置了单方向开启 入方向解密
-        if (secureConfig.getModel() == SecretKeyConstant.Model.single && secureConfig.getDirection() == SecretKeyConstant.Direction.request) {
-            return true;
-        }
-        return false;
+        return RequetSupport.checkZuulRequestParam(secureConfig);
     }
 
     /**
@@ -125,7 +107,7 @@ public class DecryptRequestFilter extends ZuulFilter {
             if (GET.name().equals(method)) {
                 extractRequestParam(ctx, request);
             }
-            if(POST.name().equals(method) || PUT.name().equals(method) || Method.DELETE.name().equals(method)) {
+            if(POST.name().equals(method) || PUT.name().equals(method) || DELETE.name().equals(method)) {
                 extractRequestParam(ctx, request);
                 AlgorithmType algorithmType = AlgorithmFactory.algorithmFactory.get();
                 String decodedStr = algorithmType.decrypt(body);

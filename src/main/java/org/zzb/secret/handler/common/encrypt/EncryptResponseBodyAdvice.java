@@ -1,14 +1,11 @@
 package org.zzb.secret.handler.common.encrypt;
 
 import com.alibaba.fastjson.JSON;
-import org.zzb.secret.algorithm.AlgorithmType;
-import org.zzb.secret.annotation.Encrypt;
-import org.zzb.secret.annotation.EncryptDecrypt;
-import org.zzb.secret.config.SecureConfig;
-import org.zzb.secret.constant.SecretKeyConstant;
-import org.zzb.secret.factory.AlgorithmFactory;
+import java.text.MessageFormat;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
@@ -16,9 +13,12 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
-
-import java.text.MessageFormat;
-import java.util.Objects;
+import org.zzb.secret.algorithm.AlgorithmType;
+import org.zzb.secret.annotation.Encrypt;
+import org.zzb.secret.annotation.EncryptDecrypt;
+import org.zzb.secret.config.SecureConfig;
+import org.zzb.secret.constant.SecretKeyConstant;
+import org.zzb.secret.factory.AlgorithmFactory;
 
 /**
  * @author zzb
@@ -27,6 +27,7 @@ import java.util.Objects;
  * @date 2024年4月14日11:15:13
  */
 @ControllerAdvice
+@ConditionalOnExpression("#{${zzb.secure.enable} && T(org.zzb.secret.constant.SecretKeyConstant.Type).valueOf('${zzb.secure.type}') == T(org.zzb.secret.constant.SecretKeyConstant.Type).comm}")
 public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());

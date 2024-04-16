@@ -1,17 +1,17 @@
 package org.zzb.secret.handler.common.decrypt;
 
-import org.zzb.secret.config.SecureConfig;
-import org.zzb.secret.util.RequetSupport;
+import java.lang.reflect.Type;
+import java.text.MessageFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice;
-
-import java.lang.reflect.Type;
-import java.text.MessageFormat;
+import org.zzb.secret.config.SecureConfig;
+import org.zzb.secret.util.RequetSupport;
 
 /**
  * @author zzb
@@ -20,6 +20,7 @@ import java.text.MessageFormat;
  * @date 2024年4月14日11:15:13
  */
 @ControllerAdvice
+@ConditionalOnExpression("#{${zzb.secure.enable} && T(org.zzb.secret.constant.SecretKeyConstant.Type).valueOf('${zzb.secure.type}') == T(org.zzb.secret.constant.SecretKeyConstant.Type).comm}")
 public class DecryptRequestBodyAdvice  implements RequestBodyAdvice {
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -34,7 +35,7 @@ public class DecryptRequestBodyAdvice  implements RequestBodyAdvice {
 
     @Override
     public boolean supports(MethodParameter methodParameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
-        return RequetSupport.checkRequestBody(methodParameter, secureConfig, false);
+        return RequetSupport.checkResponseParam(methodParameter, secureConfig, false);
     }
 
     @Override
