@@ -1,6 +1,7 @@
 package org.zzb.secret.config;
 
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.zzb.secret.algorithm.AlgorithmType;
 import org.zzb.secret.algorithm.aes.AesAlgorithm;
 import org.zzb.secret.algorithm.ras.RsaAlgorithm;
@@ -13,6 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
 import java.util.Map;
+import org.zzb.secret.handler.zuul.decrypt.DecryptRequestFilter;
+import org.zzb.secret.handler.zuul.encrypt.EncryptResponseFilter;
 
 /**
  * @author zzb
@@ -74,5 +77,17 @@ public class EncryptAutoConfiguration {
         return new SecureConfig();
     }
 
+    @Bean
+    @ConditionalOnProperty(prefix = "zzb.secure",name = "type",havingValue = "zuul")
+    public DecryptRequestFilter decryptRequestFilter(SecureConfig secureConfig) {
+        return new DecryptRequestFilter(secureConfig);
+    }
+
+
+    @Bean
+    @ConditionalOnProperty(prefix = "zzb.secure",name = "type",havingValue = "zuul")
+    public EncryptResponseFilter encryptResponseFilter(SecureConfig secureConfig) {
+        return new EncryptResponseFilter(secureConfig);
+    }
 
 }
