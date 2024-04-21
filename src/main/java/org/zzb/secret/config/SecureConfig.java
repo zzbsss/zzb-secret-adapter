@@ -3,6 +3,9 @@ package org.zzb.secret.config;
 
 import org.zzb.secret.constant.SecretKeyConstant;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import static org.zzb.secret.constant.SecretKeyConstant.UTF_8;
 
 
@@ -84,10 +87,7 @@ public class SecureConfig {
      */
     private String charset = UTF_8;
 
-    /**
-     * 是否开启
-     */
-    private boolean enable = true;
+
 
     /**
      * 模式，默认使用注解
@@ -100,9 +100,16 @@ public class SecureConfig {
     private SecretKeyConstant.Direction direction = SecretKeyConstant.Direction.all;
 
     /**
-     * 是否打印日志
+     * 请求白名单， 不做加解密
      */
-    private boolean enableLogged = false;
+    private Set<String> whiteUrls =  new HashSet<>();
+
+
+    /**
+     * 请求头标识，只对指定请求进行加解密
+     */
+    private String headerFlag;
+
 
     public void setType(SecretKeyConstant.Type type) {
         this.type = type;
@@ -140,25 +147,23 @@ public class SecureConfig {
         this.charset = charset;
     }
 
-
-    public boolean isEnable() {
-        return enable;
-    }
-
-    public void setEnable(boolean enable) {
-        this.enable = enable;
-    }
-
-    public boolean isEnableLogged() {
-        return enableLogged;
-    }
-
-    public void setEnableLogged(boolean enableLogged) {
-        this.enableLogged = enableLogged;
-    }
-
     public SecretKeyConstant.Type getType() {
         return type;
     }
 
+    public Set<String> getWhiteUrls() {
+        return whiteUrls;
+    }
+
+    public void setWhiteUrls(Set<String> whiteUrls) {
+        this.whiteUrls = whiteUrls;
+    }
+
+    public String getHeaderFlag() {
+        return headerFlag;
+    }
+
+    public void setHeaderFlag(String headerFlag) {
+        this.headerFlag = headerFlag;
+    }
 }

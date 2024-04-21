@@ -40,21 +40,20 @@ zzb.secure.direction=all
 ### 使用示例
 ``` java
     @PostMapping("testEn")
-    @EncryptDecrypt
+    @DecryptBody
+    @EncryptBody
     public String testFile(@RequestBody Map<String, Object> map) {
-    log.debug(map.toString());
-    return "success";
+        log.debug(map.toString());
+        return "success";
     }
 
     @GetMapping("testEn")
-    @EncryptDecrypt
     public String testEn(@DecryptParam  String param, @RequestParam String param1) {
         log.debug(param);
         return "success";
     }
 
     @GetMapping("testEnDTO")
-    @EncryptDecrypt
     public String testEnDTO(@DecryptParam UserDTO userDTO) {
         log.debug(userDTO.toString());
         return "success";
