@@ -1,5 +1,5 @@
 ## zzb-secret-adapter 组件
-> zzb-secret-adapter 宗旨是打造一个支持多算法、多形式（常规单应用，网关应用（zuul/gateway））的一个简单易用的加解密组件
+> zzb-secret-adapter 宗旨是打造一个支持多算法、多形式（常规单应用，网关应用（zuul/gateway））的一个简单易用而又灵活的加解密组件
 
 ### 目前已实现功能
 
