@@ -26,7 +26,7 @@ public class DecryptRequestParamResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter methodParameter) {
-        return RequestSupport.checkRequestParam(methodParameter, secureConfig, false);
+        return RequestSupport.checkRequestParam(methodParameter, secureConfig, DecryptParam.class, false);
     }
 
 

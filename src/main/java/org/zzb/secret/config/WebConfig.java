@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.zzb.secret.handler.common.decrypt.DecryptPathVariableResolver;
 import org.zzb.secret.handler.common.decrypt.DecryptRequestParamResolver;
 import org.zzb.secret.interceptor.SecretInterceptor;
 
@@ -30,5 +31,6 @@ public class WebConfig implements WebMvcConfigurer  {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
         resolvers.add(new DecryptRequestParamResolver(secureConfig));
+        resolvers.add(new DecryptPathVariableResolver(secureConfig));
     }
 }

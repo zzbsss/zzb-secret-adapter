@@ -8,13 +8,13 @@ import org.springframework.util.AntPathMatcher;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.zzb.secret.annotation.DecryptBody;
-import org.zzb.secret.annotation.DecryptParam;
 import org.zzb.secret.annotation.EncryptBody;
 import org.zzb.secret.config.SecureConfig;
 import org.zzb.secret.constant.SecretKeyConstant;
 import org.zzb.secret.context.SecretContext;
 import org.zzb.secret.context.SecretContextHolder;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -133,7 +133,7 @@ public class RequestSupport {
      * @param defaultVal
      * @return
      */
-    public static boolean checkRequestParam(MethodParameter parameter, SecureConfig secureConfig, boolean defaultVal) {
+    public static boolean checkRequestParam(MethodParameter parameter, SecureConfig secureConfig, Class<? extends Annotation> classes, boolean defaultVal) {
         Result result = getResult(secureConfig);
         // 配置了全局打开
         if (secureConfig.getModel() == SecretKeyConstant.Model.all) {
@@ -144,8 +144,8 @@ public class RequestSupport {
             return check(result);
         }
         // 判断优先级 参数上 DecryptParam -> -> 方法上 DecryptParam
-        if ((secureConfig.getModel() == SecretKeyConstant.Model.support  && (parameter.hasParameterAnnotation(DecryptParam.class)
-                ||  parameter.getMethod().isAnnotationPresent(DecryptParam.class)))){
+        if ((secureConfig.getModel() == SecretKeyConstant.Model.support  && (parameter.hasParameterAnnotation(classes)
+                ||  parameter.getMethod().isAnnotationPresent(classes)))){
             return check(result);
         }
         return defaultVal;
