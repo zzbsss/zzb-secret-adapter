@@ -4,24 +4,21 @@
 ### 目前已实现功能
 
 1.支持sm2、rsa、aes等算法进行加解密，并支持用户自定义算法进行加解密
-2.支持用户自定义当前接口是否需要加解密，方便用户适应老接口
-3.支持@RequestParam、@RequestBody等参数解析
-4.实现单体应用、网关应用的参数加解密
+2.支持用户自定义当前接口是否需要加解密，方便用户适应新老接口
+3.支持@RequestParam、@RequestBody、@PathVariable等参数解析
+4.实现单体应用、网关应用（zuul）的参数加解密
 
 待实现功能
 1.日志打印
-2.网关应用实现
-3.加解密白名单（忽略指定请求的加解密 url）、加解密标识（只有当请求中有某个请求头时才进行加解密）
-4.忽略特殊请求，如文件上传与下载
-5.form-data形式加解密
+2.忽略特殊请求，如文件上传与下载
+3.form-data形式加解密
+4.只针对配置的参数进行加解密，例如只针对返回的data字段加密
 ### 配置
 启动类上添加注解
 @EnableParamSecurity
 
 ``` properties
-# 开启加解密
-zzb.secure.enable=true
-# 应用类型，comm 通用应用、zuul统一网关、gateway网关（待实现）
+# 应用类型，comm 通用应用、zuul统一网关、gateway网关（待实现） 
 zzb.secure.type=comm 
 # 加解密算法 支持 aes/sm2/rsa 和自定义
 zzb.secure.algorithm.algorithm-name=aes
@@ -35,15 +32,27 @@ zzb.secure.algorithm.public-key=049eea820a4850372c558f4ab0d58dd598cdd0fab2bbd12d
 zzb.secure.model=support
 # 启用方向 all 入方向解密，出方向加密、request 入方向解密、response 出方向加密
 zzb.secure.direction=all
+# 请求头校验，只针对带了自定请求头的才进行加解密
+zzb.secure.header-flag=zzb
+# 白名单，不进行加解密的请求路径
+zzb.secure.white-urls[0]=/testEn
 ```
 
 ### 使用示例
 ``` java
+  
     @PostMapping("testEn")
     @DecryptBody
     @EncryptBody
-    public String testFile(@RequestBody Map<String, Object> map) {
+    public String testEn(@RequestBody Map<String, Object> map) {
         log.debug(map.toString());
+        return "success";
+    }
+
+    @PostMapping("testEn/{param}")
+    @DecryptBody
+    public String testEn(@DecryptPathVariable String param) {
+        log.debug(param);
         return "success";
     }
 
