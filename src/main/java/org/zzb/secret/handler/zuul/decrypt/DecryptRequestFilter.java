@@ -21,7 +21,7 @@ import org.springframework.util.StringUtils;
 import org.zzb.secret.algorithm.AlgorithmType;
 import org.zzb.secret.config.SecureConfig;
 import org.zzb.secret.factory.AlgorithmFactory;
-import org.zzb.secret.util.RequetSupport;
+import org.zzb.secret.util.RequestSupport;
 
 import static org.springframework.http.HttpMethod.DELETE;
 import static org.springframework.http.HttpMethod.GET;
@@ -72,7 +72,7 @@ public class DecryptRequestFilter extends ZuulFilter {
      */
     @Override
     public boolean shouldFilter() {
-        return RequetSupport.checkZuulRequestParam(secureConfig);
+        return RequestSupport.checkZuulRequestParam(secureConfig);
     }
 
     /**

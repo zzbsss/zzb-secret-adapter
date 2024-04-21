@@ -14,7 +14,7 @@ import org.springframework.util.StreamUtils;
 import org.zzb.secret.algorithm.AlgorithmType;
 import org.zzb.secret.config.SecureConfig;
 import org.zzb.secret.factory.AlgorithmFactory;
-import org.zzb.secret.util.RequetSupport;
+import org.zzb.secret.util.RequestSupport;
 
 public class EncryptResponseFilter extends ZuulFilter {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -49,7 +49,7 @@ public class EncryptResponseFilter extends ZuulFilter {
      */
     @Override
     public boolean shouldFilter() {
-        return RequetSupport.checkZuulResponseParam(secureConfig);
+        return RequestSupport.checkZuulResponseParam(secureConfig);
     }
 
     /**

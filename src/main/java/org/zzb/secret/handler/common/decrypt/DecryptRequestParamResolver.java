@@ -11,7 +11,7 @@ import org.zzb.secret.algorithm.AlgorithmType;
 import org.zzb.secret.annotation.DecryptParam;
 import org.zzb.secret.config.SecureConfig;
 import org.zzb.secret.factory.AlgorithmFactory;
-import org.zzb.secret.util.RequetSupport;
+import org.zzb.secret.util.RequestSupport;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
@@ -26,7 +26,7 @@ public class DecryptRequestParamResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter methodParameter) {
-        return RequetSupport.checkRequestParam(methodParameter, secureConfig, false);
+        return RequestSupport.checkRequestParam(methodParameter, secureConfig, false);
     }
 
 

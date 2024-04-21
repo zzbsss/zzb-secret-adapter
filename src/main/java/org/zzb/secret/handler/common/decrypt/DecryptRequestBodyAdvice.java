@@ -11,7 +11,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice;
 import org.zzb.secret.config.SecureConfig;
-import org.zzb.secret.util.RequetSupport;
+import org.zzb.secret.util.RequestSupport;
 
 /**
  * @author zzb
@@ -35,7 +35,7 @@ public class DecryptRequestBodyAdvice  implements RequestBodyAdvice {
 
     @Override
     public boolean supports(MethodParameter methodParameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
-        return RequetSupport.checkResponseParam(methodParameter, secureConfig, false);
+        return RequestSupport.checkRequestBody(methodParameter, secureConfig, false);
     }
 
     @Override
