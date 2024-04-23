@@ -8,11 +8,12 @@
 3.支持@RequestParam、@RequestBody、@PathVariable等参数解析
 4.实现单体应用、网关应用（zuul）的参数加解密
 
-待实现功能
+### 待实现功能
 1.日志打印
 2.忽略特殊请求，如文件上传与下载
 3.form-data形式加解密
 4.只针对配置的参数进行加解密，例如只针对返回的data字段加密
+
 ### 配置
 启动类上添加注解
 @EnableParamSecurity
@@ -70,3 +71,22 @@ zzb.secure.white-urls[0]=/testEn
 ```
 ![img.png](img.png)
 ![img_1.png](img_1.png)
+
+
+### Q&A
+1.RequestParam部分参数需要解密，部分参数不需要
+在需要解密的参数上打上 DecryptParam 注解，不需要加密的参数仍然使用 RequestParam 注解
+如果参数名字有与实际参数名不同则配置 DecryptParam 的value 属性
+
+2.如何开启网关配置
+启用配置 zzb.secure.type=zuul 即可
+
+3.如何使用自定义的加解密算法
+实现接口 AlgorithmType 中的加解密方法， 并将该类加入spring 容器中，不需要配置BeanName,使用默认BeanName
+例如 XxxAlgorithm 实现了 AlgorithmType，则配置 如下 
+开启配置 zzb.secure.algorithm.algorithm-name=xxx
+
+4.前端如何进行加解密
+如果是vue,可使用axios 中的请求拦截器进行加密，响应拦截器进行解密
+其他前端框架类似
+
