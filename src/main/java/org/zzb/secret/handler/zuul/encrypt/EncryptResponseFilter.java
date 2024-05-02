@@ -3,18 +3,20 @@ package org.zzb.secret.handler.zuul.encrypt;
 import com.alibaba.fastjson.JSON;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.text.MessageFormat;
-import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StreamUtils;
 import org.zzb.secret.algorithm.AlgorithmType;
 import org.zzb.secret.config.SecureConfig;
+import org.zzb.secret.exception.SecretException;
 import org.zzb.secret.factory.AlgorithmFactory;
 import org.zzb.secret.util.RequestSupport;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.text.MessageFormat;
+import java.util.Objects;
 
 public class EncryptResponseFilter extends ZuulFilter {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -70,8 +72,8 @@ public class EncryptResponseFilter extends ZuulFilter {
             currentContext.setResponseBody(encrypt);
             return null;
         }catch (Exception e) {
-            log.error("Encrypted data exception", e);
-            throw new RuntimeException(MessageFormat.format("Encrypted data exception, message{0}",e.getMessage()));
+            log.error("zuul encrypt data exception", e);
+            throw new SecretException(MessageFormat.format("Encrypted data exception, message{0}",e.getMessage()));
         }
     }
 

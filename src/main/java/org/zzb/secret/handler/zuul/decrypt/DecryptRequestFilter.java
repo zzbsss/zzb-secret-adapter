@@ -3,17 +3,6 @@ package org.zzb.secret.handler.zuul.decrypt;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.http.ServletInputStreamWrapper;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.servlet.ServletInputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletRequestWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.StreamUtils;
@@ -23,10 +12,15 @@ import org.zzb.secret.config.SecureConfig;
 import org.zzb.secret.factory.AlgorithmFactory;
 import org.zzb.secret.util.RequestSupport;
 
-import static org.springframework.http.HttpMethod.DELETE;
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
-import static org.springframework.http.HttpMethod.PUT;
+import javax.servlet.ServletInputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+
+import static org.springframework.http.HttpMethod.*;
 
 
 /**
@@ -92,7 +86,7 @@ public class DecryptRequestFilter extends ZuulFilter {
         try {
             // 请求方法
             String method = request.getMethod();
-            log.info(String.format("%s >>> %s", method, request.getRequestURL().toString()));
+            log.debug(String.format("zuul accept request %s >>> %s", method, request.getRequestURL().toString()));
             // 获取请求的输入流
             InputStream in = request.getInputStream();
             String body = StreamUtils.copyToString(in, StandardCharsets.UTF_8);
@@ -100,7 +94,7 @@ public class DecryptRequestFilter extends ZuulFilter {
             if ( StringUtils.isEmpty(body)) {
                 body = "{}";
             }
-            log.info("body" + body);
+            log.debug("zuul request body" + body);
             // todo 是否全部参数加解密还是部分参数
             //JSONObject json = JSONObject.parseObject(body);
             // get方法
@@ -111,7 +105,6 @@ public class DecryptRequestFilter extends ZuulFilter {
                 extractRequestParam(ctx, request);
                 AlgorithmType algorithmType = AlgorithmFactory.algorithmFactory.get();
                 String decodedStr = algorithmType.decrypt(body);
-                log.info("解密：" + decodedStr);
                 final byte[] reqBodyBytes = decodedStr.getBytes(StandardCharsets.UTF_8);
                 // 重写上下文的HttpServletRequestWrapper
                 ctx.setRequest(new HttpServletRequestWrapper(request) {
@@ -132,7 +125,7 @@ public class DecryptRequestFilter extends ZuulFilter {
                 });
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            log.debug("zuul decrypt failed", e);
         }
         return null;
     }

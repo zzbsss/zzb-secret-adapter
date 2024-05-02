@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import org.zzb.secret.algorithm.AlgorithmType;
 import org.zzb.secret.config.SecureConfig;
+import org.zzb.secret.exception.SecretException;
 import org.zzb.secret.factory.AlgorithmFactory;
 import org.zzb.secret.util.RequestSupport;
 
@@ -51,7 +52,7 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             return algorithmType.encrypt(content);
         } catch (Exception e) {
             log.error("Encrypted data exception", e);
-            throw new RuntimeException(MessageFormat.format("Encrypted data exception, message{0}",e.getMessage()));
+            throw new SecretException(MessageFormat.format("Encrypted data exception, message{0}",e.getMessage()));
         }
     }
 }

@@ -3,6 +3,7 @@ package org.zzb.secret.factory;
 
 import org.zzb.secret.algorithm.AlgorithmType;
 import org.zzb.secret.constant.SecretKeyConstant;
+import org.zzb.secret.exception.SecretException;
 
 import javax.annotation.PostConstruct;
 import java.text.MessageFormat;
@@ -43,7 +44,7 @@ public class AlgorithmFactory {
     public AlgorithmType get(String type){
         AlgorithmType strategy = algorithmTypeMap.get(type);
         if (null == strategy){
-            throw new RuntimeException(MessageFormat.format("不存在处理算法{0}", type));
+            throw new SecretException(MessageFormat.format("不存在处理算法{0}", type));
         }
         return strategy;
     }
@@ -55,7 +56,7 @@ public class AlgorithmFactory {
     public AlgorithmType get(){
         AlgorithmType strategy = algorithmTypeMap.get(algorithmName);
         if (null == strategy){
-            throw new RuntimeException(MessageFormat.format("不存在处理算法{0}", algorithmName));
+            throw new SecretException(MessageFormat.format("不存在处理算法{0}", algorithmName));
         }
         return strategy;
     }

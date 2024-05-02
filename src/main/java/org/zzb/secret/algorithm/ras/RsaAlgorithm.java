@@ -3,6 +3,7 @@ package org.zzb.secret.algorithm.ras;
 import org.zzb.secret.algorithm.AlgorithmType;
 import org.zzb.secret.config.SecureConfig;
 import org.zzb.secret.constant.SecretKeyConstant;
+import org.zzb.secret.exception.SecretException;
 
 public class RsaAlgorithm implements AlgorithmType {
 
@@ -19,10 +20,10 @@ public class RsaAlgorithm implements AlgorithmType {
             return;
         }
         if (privateKey == null || privateKey.isEmpty()) {
-            throw new RuntimeException("rsa privateKey can not be null");
+            throw new SecretException("rsa privateKey can not be null");
         }
         if (publicKey == null || publicKey.isEmpty()) {
-            throw new RuntimeException("rsa privateKey can not be null");
+            throw new SecretException("rsa privateKey can not be null");
         }
         this.secureConfig = secureConfig;
     }
@@ -33,7 +34,7 @@ public class RsaAlgorithm implements AlgorithmType {
         try {
             return new String(RSAUtil.encrypt(data.getBytes(secureConfig.getCharset()), publicKey));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new SecretException(e);
         }
     }
 
@@ -42,7 +43,7 @@ public class RsaAlgorithm implements AlgorithmType {
         try {
             return new String(RSAUtil.decrypt(data.getBytes(secureConfig.getCharset()), privateKey));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new SecretException(e);
         }
     }
 }

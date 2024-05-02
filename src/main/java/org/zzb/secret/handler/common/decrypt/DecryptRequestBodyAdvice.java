@@ -9,6 +9,7 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.RequestBodyAdvice;
 import org.zzb.secret.config.SecureConfig;
+import org.zzb.secret.exception.SecretException;
 import org.zzb.secret.util.RequestSupport;
 
 import java.lang.reflect.Type;
@@ -51,8 +52,8 @@ public class DecryptRequestBodyAdvice  implements RequestBodyAdvice {
         try {
             return new DecryptHttpInputMessage(inputMessage,parameter, targetType, converterType, secureConfig);
         } catch (Exception e) {
-            log.error("Decryption failed", e);
-            throw new RuntimeException(MessageFormat.format("Decryption failed message {0}", e.getMessage()));
+            log.error("Decrypt failed", e);
+            throw new SecretException(MessageFormat.format("Decryption failed message {0}", e.getMessage()));
         }
 
     }

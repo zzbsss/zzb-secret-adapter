@@ -3,6 +3,7 @@ package org.zzb.secret.algorithm.aes;
 import org.zzb.secret.algorithm.AlgorithmType;
 import org.zzb.secret.config.SecureConfig;
 import org.zzb.secret.constant.SecretKeyConstant;
+import org.zzb.secret.exception.SecretException;
 
 import java.nio.charset.Charset;
 
@@ -28,7 +29,7 @@ public class AesAlgorithm implements AlgorithmType {
             return;
         }
         if (sk == null || sk.isEmpty()) {
-            throw new RuntimeException("aes key can not be null");
+            throw new SecretException("aes key can not be null");
         }
         this.key = secureConfig.getAlgorithm().getKey();
         this.secureConfig = secureConfig;
@@ -39,7 +40,7 @@ public class AesAlgorithm implements AlgorithmType {
         try {
             return AesUtils.encrypt(data, key, Charset.forName(secureConfig.getCharset()));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new SecretException(e);
         }
     }
 
@@ -48,7 +49,7 @@ public class AesAlgorithm implements AlgorithmType {
         try {
             return  AesUtils.decrypt(data, key, Charset.forName(secureConfig.getCharset()));
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new SecretException(e);
         }
     }
 }
