@@ -78,7 +78,6 @@ public class EncryptAutoConfiguration {
     }
 
     @Bean
-
     @ConditionalOnExpression("#{T(org.zzb.secret.constant.SecretKeyConstant.Type).valueOf('${zzb.secure.type:comm}') == T(org.zzb.secret.constant.SecretKeyConstant.Type).zuul}")
     public DecryptRequestFilter decryptRequestFilter(SecureConfig secureConfig) {
         return new DecryptRequestFilter(secureConfig);
@@ -86,7 +85,6 @@ public class EncryptAutoConfiguration {
 
 
     @Bean
-
     @ConditionalOnExpression("#{T(org.zzb.secret.constant.SecretKeyConstant.Type).valueOf('${zzb.secure.type:comm}') == T(org.zzb.secret.constant.SecretKeyConstant.Type).zuul}")
     public EncryptResponseFilter encryptResponseFilter(SecureConfig secureConfig) {
         return new EncryptResponseFilter(secureConfig);

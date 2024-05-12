@@ -3,8 +3,7 @@ package org.zzb.secret.config;
 
 import org.zzb.secret.constant.SecretKeyConstant;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.zzb.secret.constant.SecretKeyConstant.UTF_8;
 
@@ -72,6 +71,58 @@ public class SecureConfig {
 
     }
 
+    public static Map<String,String> requestParamMap = new HashMap<>();
+
+    public static Map<String,String> responseParamMap = new HashMap<>();
+
+
+    /**
+     * 需要加解密的参数
+     */
+    public static class SecureParams  {
+
+        /**
+         * 需要解密的请求参数，多个请以逗号隔开
+         */
+        private String request;
+
+        /**
+         * 需要加密的响应参数，多个请以逗号隔开
+         */
+        private String response;
+
+        public String getRequest() {
+            return request;
+        }
+
+        public void setRequest(String request) {
+            this.request = request;
+            if (Objects.isNull(request) || request.length() == 0) {
+               return;
+            }
+            String[] split = request.split(",");
+            for (String str : split) {
+                requestParamMap.put(str, str);
+            }
+        }
+
+        public String getResponse() {
+            return response;
+        }
+
+        public void setResponse(String response) {
+            this.response = response;
+            if (Objects.isNull(response) || response.length() == 0) {
+                return;
+            }
+            String[] split = response.split(",");
+            for (String str : split) {
+                responseParamMap.put(str, str);
+            }
+        }
+    }
+
+
     /**
      * 实现方式 可使用comm、zuul 实现方式
      */
@@ -83,10 +134,14 @@ public class SecureConfig {
     private  Algorithm algorithm = new Algorithm();
 
     /**
+     * 参数配置
+     */
+    private SecureParams secureParams = new SecureParams();
+
+    /**
      * 编码
      */
     private String charset = UTF_8;
-
 
 
     /**
@@ -165,5 +220,29 @@ public class SecureConfig {
 
     public void setHeaderFlag(String headerFlag) {
         this.headerFlag = headerFlag;
+    }
+
+    public static Map<String, String> getRequestParamMap() {
+        return requestParamMap;
+    }
+
+    public static void setRequestParamMap(Map<String, String> requestParamMap) {
+        SecureConfig.requestParamMap = requestParamMap;
+    }
+
+    public static Map<String, String> getResponseParamMap() {
+        return responseParamMap;
+    }
+
+    public static void setResponseParamMap(Map<String, String> responseParamMap) {
+        SecureConfig.responseParamMap = responseParamMap;
+    }
+
+    public SecureParams getSecureParams() {
+        return secureParams;
+    }
+
+    public void setSecureParams(SecureParams secureParams) {
+        this.secureParams = secureParams;
     }
 }

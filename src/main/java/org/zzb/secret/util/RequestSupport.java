@@ -1,7 +1,9 @@
 package org.zzb.secret.util;
 
-import com.netflix.util.Pair;
 import com.netflix.zuul.context.RequestContext;
+import com.netflix.util.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.AntPathMatcher;
@@ -24,6 +26,8 @@ import static org.zzb.secret.constant.SecretKeyConstant.APP_JSON;
 import static org.zzb.secret.constant.SecretKeyConstant.CONTENT_TYPE;
 
 public class RequestSupport {
+
+    private static  final Logger LOG = LoggerFactory.getLogger(RequestSupport.class);
 
     private static final AntPathMatcher pathMatcher = new AntPathMatcher();
 
@@ -72,6 +76,12 @@ public class RequestSupport {
         // 包含即可，不校验内容
         if (headerFlag != null && !StringUtils.isEmpty(headerFlag)) {
             isHeadFlag = Objects.nonNull(secretContext.getRequestHeader().get(headerFlag));
+            if (!isHeadFlag && LOG.isDebugEnabled()) {
+                LOG.warn("No header, ignored");
+            }
+        }
+        if (isWhite && LOG.isDebugEnabled()) {
+            LOG.warn("this is a white url, ignored");
         }
         return new Result(isWhite, isHeadFlag, headerFlag);
     }

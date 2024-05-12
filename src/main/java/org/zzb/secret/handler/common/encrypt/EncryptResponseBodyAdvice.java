@@ -1,6 +1,7 @@
 package org.zzb.secret.handler.common.encrypt;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
@@ -18,6 +19,8 @@ import org.zzb.secret.factory.AlgorithmFactory;
 import org.zzb.secret.util.RequestSupport;
 
 import java.text.MessageFormat;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author zzb
@@ -49,6 +52,16 @@ public class EncryptResponseBodyAdvice implements ResponseBodyAdvice<Object> {
             String content = JSON.toJSONString(body);
             // 获取到当前配置的解密算法
             AlgorithmType algorithmType = AlgorithmFactory.algorithmFactory.get();
+            Map<String, String> responseParamMap = SecureConfig.getResponseParamMap();
+            if (responseParamMap.size() > 0 && JSON.isValid(content)) {
+                JSONObject from = JSONObject.parseObject(content);
+                from.forEach((k,v) -> {
+                    if (Objects.nonNull(responseParamMap.get(k)) && Objects.nonNull(v)) {
+                        from.put(k,  algorithmType.encrypt(content));
+                    }
+                });
+                return from;
+            }
             return algorithmType.encrypt(content);
         } catch (Exception e) {
             log.error("Encrypted data exception", e);

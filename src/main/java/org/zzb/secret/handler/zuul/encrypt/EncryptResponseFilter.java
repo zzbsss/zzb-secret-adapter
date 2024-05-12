@@ -1,6 +1,7 @@
 package org.zzb.secret.handler.zuul.encrypt;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
+import java.util.Map;
 import java.util.Objects;
 
 public class EncryptResponseFilter extends ZuulFilter {
@@ -65,8 +67,19 @@ public class EncryptResponseFilter extends ZuulFilter {
             AlgorithmType algorithmType = AlgorithmFactory.algorithmFactory.get();
             RequestContext currentContext = RequestContext.getCurrentContext();
             String respParams = getRespParams(currentContext);
-            String content = JSON.toJSONString(respParams);
-            String encrypt = algorithmType.encrypt(content);
+            Map<String, String> responseParamMap = SecureConfig.getResponseParamMap();
+            String encrypt;
+            if (responseParamMap.size() > 0 && JSON.isValid(respParams))  {
+                JSONObject from = JSONObject.parseObject(respParams);
+                from.forEach((k,v) -> {
+                    if (Objects.nonNull(responseParamMap.get(k)) && Objects.nonNull(v)) {
+                        from.put(k, algorithmType.encrypt(String.valueOf(v)));
+                    }
+                });
+                encrypt = from.toJSONString();
+            }else {
+                encrypt = algorithmType.encrypt(respParams);
+            }
             // 修复可能乱码问题
             currentContext.getResponse().setCharacterEncoding(secureConfig.getCharset());
             currentContext.setResponseBody(encrypt);

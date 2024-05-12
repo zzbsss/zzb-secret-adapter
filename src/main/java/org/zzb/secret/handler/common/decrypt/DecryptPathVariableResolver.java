@@ -26,6 +26,7 @@ import org.zzb.secret.util.RequestSupport;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class DecryptPathVariableResolver extends AbstractNamedValueMethodArgumentResolver implements UriComponentsContributor {
 
@@ -60,7 +61,12 @@ public class DecryptPathVariableResolver extends AbstractNamedValueMethodArgumen
         AlgorithmType algorithmType = AlgorithmFactory.algorithmFactory.get();
         Map<String, String> uriTemplateVars = (Map<String, String>) request.getAttribute(
                 HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, RequestAttributes.SCOPE_REQUEST);
-        return (uriTemplateVars != null ? algorithmType.decrypt(uriTemplateVars.get(name)) : null);
+        Map<String, String> requestParamMap = SecureConfig.getRequestParamMap();
+        // 是否自定义参数解密
+        if (requestParamMap.size() == 0 || (Objects.nonNull(requestParamMap.get(name)))) {
+            return (uriTemplateVars != null ? algorithmType.decrypt(uriTemplateVars.get(name)) : null);
+        }
+        return (uriTemplateVars != null ? uriTemplateVars.get(name) : null);
     }
 
     @Override

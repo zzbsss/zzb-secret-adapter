@@ -18,7 +18,6 @@
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <zuul-core-version>1.3.1</zuul-core-version>
-        <netflix-commons-util-version>0.3.0</netflix-commons-util-version>
         <fastjson-version>2.0.25</fastjson-version>
         <bcprov-jdk15on-version>1.65</bcprov-jdk15on-version>
         <hutool-version>5.6.7</hutool-version>
@@ -89,12 +88,6 @@
             <groupId>com.netflix.zuul</groupId>
             <artifactId>zuul-core</artifactId>
             <version>${zuul-core-version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.netflix.netflix-commons</groupId>
-            <artifactId>netflix-commons-util</artifactId>
-            <version>${netflix-commons-util-version}</version>
         </dependency>
 
         <!-- 配置提示 -->

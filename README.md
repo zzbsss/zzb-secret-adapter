@@ -7,11 +7,7 @@
 2.支持用户自定义当前接口是否需要加解密，方便用户适应新老接口
 3.支持@RequestParam、@RequestBody、@PathVariable等参数解析
 4.实现单体应用、网关应用（zuul）的参数加解密
-
-### 待实现功能
-1.忽略特殊请求，如文件上传与下载
-2.form-data形式加解密
-3.只针对配置的参数进行加解密，例如只针对返回的data字段加密
+5.支持自定义字段配置（指定字段加解密）
 
 ### 配置
 启动类上添加注解
@@ -36,6 +32,10 @@ zzb.secure.direction=all
 zzb.secure.header-flag=zzb
 # 白名单，不进行加解密的请求路径
 zzb.secure.white-urls[0]=/testEn
+# 指定请求字段解密（可选）
+zzb.secure.secure-params.request=param
+# 指定响应字段加密 （可选）
+zzb.secure.secure-params.response=data
 ```
 
 ### 使用示例
@@ -70,8 +70,7 @@ zzb.secure.white-urls[0]=/testEn
 ```
 ![img.png](img.png)
 ![img_1.png](img_1.png)
-
-
+![img_2.png](img_2.png)
 ### Q&A
 1.RequestParam部分参数需要解密，部分参数不需要
 在需要解密的参数上打上 DecryptParam 注解，不需要加密的参数仍然使用 RequestParam 注解

@@ -1,5 +1,6 @@
 package org.zzb.secret.handler.zuul.decrypt;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.netflix.zuul.ZuulFilter;
 import com.netflix.zuul.context.RequestContext;
 import com.netflix.zuul.http.ServletInputStreamWrapper;
@@ -95,8 +96,6 @@ public class DecryptRequestFilter extends ZuulFilter {
                 body = "{}";
             }
             log.debug("zuul request body" + body);
-            // todo 是否全部参数加解密还是部分参数
-            //JSONObject json = JSONObject.parseObject(body);
             // get方法
             if (GET.name().equals(method)) {
                 extractRequestParam(ctx, request);
@@ -104,7 +103,21 @@ public class DecryptRequestFilter extends ZuulFilter {
             if(POST.name().equals(method) || PUT.name().equals(method) || DELETE.name().equals(method)) {
                 extractRequestParam(ctx, request);
                 AlgorithmType algorithmType = AlgorithmFactory.algorithmFactory.get();
-                String decodedStr = algorithmType.decrypt(body);
+                String decodedStr;
+                Map<String, String> requestParamMap = SecureConfig.getRequestParamMap();
+                // 配置了指定参数解密，后续可以考虑统配符号 例如 *Param 以Param的都要解密
+                if (requestParamMap.size() > 0) {
+                    JSONObject from = JSONObject.parseObject(body);
+                    from.forEach((k,v) -> {
+                        if (Objects.nonNull(requestParamMap.get(k)) && Objects.nonNull(v)) {
+                            String decrypted = algorithmType.decrypt(String.valueOf(v));
+                            from.put(k,decrypted);
+                        }
+                    });
+                    decodedStr = from.toJSONString();
+                }else {
+                    decodedStr = algorithmType.decrypt(body);
+                }
                 final byte[] reqBodyBytes = decodedStr.getBytes(StandardCharsets.UTF_8);
                 // 重写上下文的HttpServletRequestWrapper
                 ctx.setRequest(new HttpServletRequestWrapper(request) {
@@ -141,12 +154,20 @@ public class DecryptRequestFilter extends ZuulFilter {
         while (parameterNames.hasMoreElements()) {
             String key = parameterNames.nextElement();
             String parameter = request.getParameter(key);
-            if (parameter != null && !StringUtils.isEmpty(parameter)) {
-                // 关键步骤，一定要get一下,下面才能取到值requestQueryParams
-                request.getParameterMap();
-                List<String> arrayList = new ArrayList<>();
+            if (parameter == null || StringUtils.isEmpty(parameter)) {
+               continue;
+            }
+            // 关键步骤，一定要get一下,下面才能取到值requestQueryParams
+            request.getParameterMap();
+            List<String> arrayList = new ArrayList<>();
+            Map<String, String> requestParamMap = SecureConfig.getRequestParamMap();
+            // 配置了指定参数解密，后续可以考虑通配符号 例如 *Param 以Param的都要解密
+            if (requestParamMap.size() > 0 && Objects.nonNull(requestParamMap.get(key))) {
                 String decodedStr = algorithmType.decrypt(parameter);
-                arrayList.add(decodedStr + "");
+                arrayList.add(decodedStr);
+                requestQueryParams.put(key, arrayList);
+            }else {
+                arrayList.add(parameter);
                 requestQueryParams.put(key, arrayList);
             }
         }

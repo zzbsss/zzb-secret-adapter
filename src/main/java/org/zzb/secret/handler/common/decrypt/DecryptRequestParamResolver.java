@@ -14,6 +14,7 @@ import org.zzb.secret.factory.AlgorithmFactory;
 import org.zzb.secret.util.RequestSupport;
 
 import java.lang.reflect.Field;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -41,13 +42,18 @@ public class DecryptRequestParamResolver implements HandlerMethodArgumentResolve
             paramName = parameter.getParameterName();
         }
         Class<?> parameterType = parameter.getParameterType();
+        Map<String, String> requestParamMap = SecureConfig.getRequestParamMap();
         if (String.class.isAssignableFrom(parameterType)) {
             String value = webRequest.getParameter(paramName);
             // 为空值不解密
             if (Objects.isNull(value) || StringUtils.isEmpty(value)) {
                 return value;
             }
-            return algorithmType.decrypt(value);
+            // 自定义参数加解密
+            if (requestParamMap.size() == 0 || (Objects.nonNull(requestParamMap.get(paramName)))) {
+                return algorithmType.decrypt(value);
+            }
+            return value;
         }
         // 非String ,通过反射赋值
         Object obj = ReflectUtil.newInstance(parameterType);
@@ -55,7 +61,11 @@ public class DecryptRequestParamResolver implements HandlerMethodArgumentResolve
         for (Field field : fields) {
             field.setAccessible(true);
             String val = webRequest.getParameter(field.getName());
-            if (Objects.nonNull(val) && !StringUtils.isEmpty(val)) {
+            if (Objects.nonNull(val) && !StringUtils.isEmpty(val) && requestParamMap.size() == 0) {
+                String decrypted = algorithmType.decrypt(val);
+                ReflectUtil.setFieldValue(obj, field, decrypted);
+            }
+            if (requestParamMap.size() > 0 && Objects.nonNull(requestParamMap.get(field.getName()))) {
                 String decrypted = algorithmType.decrypt(val);
                 ReflectUtil.setFieldValue(obj, field, decrypted);
             }
