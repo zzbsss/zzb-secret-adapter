@@ -1,12 +1,18 @@
 ## zzb-secret-adapter 组件
 > zzb-secret-adapter 宗旨是打造一个支持多算法、多形式（常规单应用，网关应用（zuul/gateway））的一个简单易用而又灵活的加解密组件
 
+### 整体架构
+![img_3.png](img_3.png)
 ### 目前已实现功能
 
 1.支持sm2、rsa、aes等算法进行加解密，并支持用户自定义算法进行加解密
+
 2.支持用户自定义当前接口是否需要加解密，方便用户适应新老接口
+
 3.支持@RequestParam、@RequestBody、@PathVariable等参数解析
+
 4.实现单体应用、网关应用（zuul）的参数加解密
+
 5.支持自定义字段配置（指定字段加解密）
 
 ### 配置
