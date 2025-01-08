@@ -30,7 +30,7 @@ zzb.secure.algorithm.key=qabAXTk9Z1akNjkQ
 zzb.secure.algorithm.private-key=d0efc0377a7f7f0e106c0c4c5d26678c685f400ab0a9970220952868fc426b38
 # 非对称加密算法公钥
 zzb.secure.algorithm.public-key=049eea820a4850372c558f4ab0d58dd598cdd0fab2bbd12dcfa932da92fa692dfd1f9be65d6d0a2e5ac4470130b473e6e1b34fa6aee57b9bb1b08f6c2da7a14c9a
-# 模式 all 全局启用、support （默认）打了注解才进行加解密、single 单方向启用，需要配合leaf.secure.direction 启用
+# 模式 all 全局启用、support （默认）打了注解才进行加解密、single 单方向启用，需要配合zzb.secure.direction 启用
 zzb.secure.model=support
 # 启用方向 all 入方向解密，出方向加密、request 入方向解密、response 出方向加密
 zzb.secure.direction=all
